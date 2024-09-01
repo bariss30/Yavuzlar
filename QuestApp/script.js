@@ -6,9 +6,19 @@ let questions = [
             { text: "int, float, double", correct: false },
             { text: "public, private, protected", correct: false },
             { text: "if, else, switch", correct: false },
-        ]
+        ],
+        difficulty: "easy" 
     },
-    
+    {
+        questions: "JavaScript'te bir değişken tanımlamak için hangi anahtar kelimeler kullanılır?",
+        answer: [
+            { text: "var, let, const", correct: true },
+            { text: "int, float, double", correct: false },
+            { text: "public, private, protected", correct: false },
+            { text: "if, else, switch", correct: false },
+        ],
+        difficulty: "medium" 
+    },
 ];
 
 const questionsElement = document.getElementById("questions");
@@ -36,8 +46,11 @@ function startQuiz() {
 function showQuestions() {
     resetState();
     let currentQuestions = questions[currentQuestionsIndex];
+
+
+    
     let questionsNo = currentQuestionsIndex + 1;
-    questionsElement.innerHTML = questionsNo + ". " + currentQuestions.questions;
+    questionsElement.innerHTML = `${questionsNo}. ${currentQuestions.questions} (Zorluk: ${currentQuestions.difficulty})`;
     currentQuestions.answer.forEach(answer => {
         const button = document.createElement("button");
         button.innerHTML = answer.text;
@@ -142,7 +155,7 @@ nextButton.addEventListener("click", () => {
 
 
 function addQuestion() {
-    const newQuestionText = prompt("Yeni soru ?");
+    const newQuestionText = prompt("Yeni soru?");
     if (!newQuestionText) {
         alert("Soru boş olamaz");
         return;
@@ -152,7 +165,7 @@ function addQuestion() {
     for (let i = 1; i <= 4; i++) {
         const answerText = prompt(`Cevap ${i} nedir?`);
         if (!answerText) {
-            alert("Cevap  boş olamaz");
+            alert("Cevap boş olamaz");
             return;
         }
         newAnswers.push({ text: answerText, correct: false });
@@ -166,13 +179,17 @@ function addQuestion() {
         return;
     }
 
-    questions.push({ questions: newQuestionText, answer: newAnswers });
+    const difficulty = prompt("Zorluk seviyesini girin (easy, medium, hard):");
+    if (!["easy", "medium", "hard"].includes(difficulty)) {
+        alert("Geçersiz zorluk seviyesi!");
+        return;
+    }
+
+    questions.push({ questions: newQuestionText, answer: newAnswers, difficulty: difficulty });
     alert("Yeni soru eklendi");
 }
-const addQuestionButton = document.getElementById("add-question-btn");
-addQuestionButton.addEventListener("click", addQuestion);
-
-
+const addQuestionsButton = document.getElementById("add-question-btn");
+addQuestionsButton.addEventListener("click", addQuestion);
 
 
 
@@ -186,7 +203,7 @@ function dellQuestions() {
         questionList += `${index + 1}: ${q.questions}\n`;
     });
 
-    const questionIndex = parseInt(prompt(questionList)) - 1;
+    const questionIndex = prompt(questionList) - 1;
 
     if (questionIndex >= 0 && questionIndex < questions.length) {
         questions.splice(questionIndex, 1);
@@ -200,10 +217,8 @@ function dellQuestions() {
         alert("Geçersiz bir indeks seçtiniz.");
     }
 }
-
 const dellQuestionsButton = document.getElementById("del-question-btn");
 dellQuestionsButton.addEventListener("click", dellQuestions);
-
 
 
 
@@ -214,13 +229,100 @@ dellQuestionsButton.addEventListener("click", dellQuestions);
 function editQuestions() {
     let questionList = "Düzenlemek istediğiniz sorunun numarasını seçin:\n";
     questions.forEach((q, index) => {
-        questionList += `${index + 1}: ${q.questions}\n`;
+        questionList += `${index + 1}: ${q.questions} (Zorluk: ${q.difficulty})\n`;
     });
 
-   
-}
+    const questionIndex = prompt(questionList) - 1;
 
+    if (questionIndex >= 0 && questionIndex < questions.length) {
+        const currentQuestion = questions[questionIndex].questions;
+        const newQuestion = prompt("Yeni soruyu giriniz:", currentQuestion);
+
+     
+
+        questions[questionIndex].questions = newQuestion;
+
+        let answerList = "Düzenlemek istediğiniz cevabın numarasını seçin:\n";
+        questions[questionIndex].answer.forEach((a, index) => {
+            answerList += `${index + 1}: ${a.text}\n`;
+        });
+
+        let answerIndex = prompt(answerList) - 1;
+
+        while (answerIndex >= 0 && answerIndex < questions[questionIndex].answer.length) {
+            const currentAnswer = questions[questionIndex].answer[answerIndex].text;
+            const newAnswer = prompt("Yeni cevabı girin:", currentAnswer);
+
+           
+
+            const correctAnswer = confirm("Bu cevabı doğru olarak işaretlemek istiyor musun");
+            questions[questionIndex].answer.forEach(a => a.correct = false); 
+            questions[questionIndex].answer[answerIndex] = {
+                text: newAnswer,
+                correct: correctAnswer
+            };
+
+            answerList = "Düzenlemek istediğiniz cevabın numarasını seçin:\n";
+            questions[questionIndex].answer.forEach((a, index) => {
+                answerList += `${index + 1}: ${a.text} \n`;
+            });
+
+            answerIndex = prompt(answerList) - 1;
+        }
+
+        
+        const newDifficulty = prompt("Yeni zorluk seviyesini girin (easy, medium, hard):");
+        if (["easy", "medium", "hard"].includes(newDifficulty)) {
+            questions[questionIndex].difficulty = newDifficulty;
+        } else {
+            alert("Geçersiz zorluk seviyesi");
+        }
+
+        alert("Soru ve cevaplar başarıyla güncellendi");
+        showQuestions(); 
+    } else {
+        alert("Geçersiz bir indeks seçtini");
+    }
+}
 const editQuestionsButton = document.getElementById("edit-question-btn");
 editQuestionsButton.addEventListener("click", editQuestions);
+
+
+
+
+
+
+
+
+function searchQuestions() {
+    const searchTerm = prompt("Aramak istediğiniz kelimeyi gir");
+    
+
+    const searchResults = questions.filter(q => q.questions && q.questions.includes(searchTerm));
+
+    if (searchResults.length === 0) {
+        alert("Arama terimi ile eşleşen soru bulunamadı.");
+        return;
+    }
+
+    let resultList = "Arama sonuçları:\n";
+    searchResults.forEach((q, index) => {
+        resultList += `${index + 1}: ${q.questions} (Zorluk: ${q.difficulty})\n`;
+        q.answer.forEach((a, aIndex) => {
+            resultList += `  Cevap ${aIndex + 1}: ${a.text}\n`;
+        });
+
+    });
+
+    alert(resultList);
+}
+const searchQuestionButton = document.getElementById("search-question-btn");
+searchQuestionButton.addEventListener("click", searchQuestions);
+
+
+
+
+
+
 
 startQuiz();
