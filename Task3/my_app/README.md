@@ -4,12 +4,13 @@
 
 Kullanım : 
 
+``
+git clone https://github.com/bariss30/Yavuzlar.git/Task3/my_app``<br>
+``cd Task3/my_app/docker`` <br>
+``docker-compose up -d``<br>
+`` http://127.0.0.1``<br>
 
-
-cd docker <br>
-docker-compose up -d<br>
-http://127.0.0.1<br>
-
+Docker Engine Yüklü Olduğundan Emin Olun
 
 
 
@@ -70,7 +71,8 @@ docker-compose down -v
 
 
 Eksikler ! 
-şifreleme Algoritması yanlış yapılandırması
+Şifreleme Algoritması yanlış yapılandırması ! => Admin Panelinden Kullanıcı Oluşturma Eksiği 
+
 
 
 
