@@ -2,7 +2,7 @@
 
 
 ## TR
-Bu repositories WEB güvenliği ve Yazılım takımı olan YAVUZLARIN haftalık ödevlerini içermektedir.
+Bu repository WEB güvenliği ve Yazılım takımı olan YAVUZLARIN haftalık ödevlerini içermektedir.
 
 
 ## ENG
